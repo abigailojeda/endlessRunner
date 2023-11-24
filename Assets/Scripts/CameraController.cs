@@ -4,28 +4,29 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [Header("CAMERA")]
-    [SerializeField]
-    GameObject player;
+    [SerializeField] Camera[] cameras;
+    [SerializeField] int activeCamera = 0;
 
-    [Header("Rotation Settings")]
-    [SerializeField]
-    float cameraTilt = 25.0f;
+    void Start()
+    {
+        ChangeCamera(activeCamera);
+    }
 
     void Update()
     {
-        if (player != null) 
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            Vector3 playerPosition = player.transform.position;
-
-            Vector3 newPosition = new Vector3(playerPosition.x, transform.position.y, transform.position.z);
-            transform.position = newPosition;
-
-            transform.rotation = Quaternion.Euler(cameraTilt, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+            if (activeCamera == cameras.Length - 1) activeCamera = 0;
+            else activeCamera++;
+            ChangeCamera(activeCamera);
         }
-        else
-        {
-            Debug.LogWarning("No player found");
-        }
+    }
+
+    void ChangeCamera(int camera)
+    {
+        if (cameras.Length == 0) return;
+        for (int i = 0; i < cameras.Length; i++)
+            if (camera == i) cameras[i].enabled = true;
+            else cameras[i].enabled = false;
     }
 }
