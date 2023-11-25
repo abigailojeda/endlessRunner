@@ -21,8 +21,10 @@ public class PlayerMovement : MonoBehaviour
            
         //}
      
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && rig.position.y < -8)
         {
+            GameObject.Find("SoundManager").GetComponent<SoundManager>().playAudio("jump");
+
             rig.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
         }
 
@@ -37,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
 
             if (collision.gameObject.tag == "Enemy")
             {
+                GameObject.Find("SoundManager").GetComponent<SoundManager>().playAudio("damage");
+
                 GameOver();
             }
         }

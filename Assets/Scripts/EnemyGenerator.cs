@@ -6,11 +6,12 @@ public class EnemyGenerator : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public float spawnInterval = 1.5f;
-    public float minXDistance = 1.0f;
+    public float minXDistance = 12.0f;
     public int maxEnemies = 5;
     public Transform playerTransform;
     private float timer;
     private List<GameObject> activeEnemies = new List<GameObject>();
+    private List<GameObject> enemiesThatGavePoints = new List<GameObject>();
 
     public GameObject playerObject;
     private int points = 0;
@@ -31,7 +32,7 @@ public class EnemyGenerator : MonoBehaviour
 
     void GenerateEnemy()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(playerTransform.position.x + minXDistance, 180f), -7.9f, 0f);
+        Vector3 spawnPosition = new Vector3(Random.Range(playerTransform.position.x + minXDistance, 180f), -9.72f, 0f);
 
         if (IsFarEnough(spawnPosition))
         {
@@ -66,24 +67,23 @@ public class EnemyGenerator : MonoBehaviour
     {
         if (playerObject == null) return;
 
-        List<GameObject> enemiesToRemove = new List<GameObject>();
 
         foreach (GameObject enemy in activeEnemies)
         {
-            if (enemy != null && playerObject.transform.position.x > enemy.transform.position.x)
+            if (enemy != null && !enemiesThatGavePoints.Contains(enemy) && playerObject.transform.position.x > enemy.transform.position.x)
             {
+                GameObject.Find("SoundManager").GetComponent<SoundManager>().playAudio("pickup");
+
                 points += 1;
                 GameObject.Find("Score").GetComponent<TMP_Text>().text = points.ToString();
 
                 Debug.Log(points);
-                enemiesToRemove.Add(enemy); 
+                enemiesThatGavePoints.Add(enemy);
+              
             }
         }
 
-        foreach (GameObject enemyToRemove in enemiesToRemove)
-        {
-            RemoveEnemy(enemyToRemove);
-        }
+       
     }
 
 
